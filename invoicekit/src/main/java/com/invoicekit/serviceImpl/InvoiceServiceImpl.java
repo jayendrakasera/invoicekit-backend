@@ -13,6 +13,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class InvoiceServiceImpl implements InvoiceService {
 
+    private final UserRepository userRepository;
     private final InvoiceRepository invoiceRepository;
     private final ClientRepository clientRepository;
 
@@ -57,6 +58,31 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         invoice.setClient(client);
         invoice.setItems(invoiceItems);
+
+        return invoiceRepository.save(invoice);
+    }
+
+    @Override
+    public List<Invoice> getAllInvoices(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return invoiceRepository.findByClientUserId(user.getId());
+    }
+
+    @Override
+    public Invoice getInvoiceById(Long id) {
+        return invoiceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Invoice not found"));
+    }
+
+    @Override
+    public Invoice updateInvoiceStatus(Long id, String status) {
+
+        Invoice invoice = getInvoiceById(id);
+
+        invoice.setStatus(InvoiceStatus.valueOf(status.toUpperCase()));
 
         return invoiceRepository.save(invoice);
     }
