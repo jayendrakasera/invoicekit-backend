@@ -7,6 +7,7 @@ import java.util.List;
 import com.invoicekit.service.InvoiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.*;
 
 @RestController
 @RequestMapping("/api/invoices")
@@ -42,5 +43,17 @@ public class InvoiceController {
             @RequestParam String status
     ) {
         return invoiceService.updateInvoiceStatus(id, status);
+    }
+
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> downloadInvoicePdf(@PathVariable Long id) {
+
+        byte[] pdf = invoiceService.generateInvoicePdf(id);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=invoice.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
     }
 }

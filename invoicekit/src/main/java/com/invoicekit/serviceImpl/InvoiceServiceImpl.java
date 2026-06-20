@@ -4,6 +4,7 @@ import com.invoicekit.dto.*;
 import com.invoicekit.entity.*;
 import com.invoicekit.repository.*;
 import com.invoicekit.service.InvoiceService;
+import com.invoicekit.util.PdfGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -85,5 +86,11 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setStatus(InvoiceStatus.valueOf(status.toUpperCase()));
 
         return invoiceRepository.save(invoice);
+    }
+
+    @Override
+    public byte[] generateInvoicePdf(Long invoiceId) {
+        Invoice invoice = getInvoiceById(invoiceId);
+        return PdfGenerator.generateInvoicePdf(invoice);
     }
 }

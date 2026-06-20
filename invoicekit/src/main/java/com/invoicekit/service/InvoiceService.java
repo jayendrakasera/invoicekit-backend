@@ -14,4 +14,6 @@ public interface InvoiceService {
     Invoice getInvoiceById(Long id);
 
     Invoice updateInvoiceStatus(Long id, String status);
+
+    byte[] generateInvoicePdf(Long invoiceId);
 }
