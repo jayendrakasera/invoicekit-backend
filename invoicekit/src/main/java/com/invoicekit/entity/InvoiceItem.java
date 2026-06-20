@@ -1,5 +1,6 @@
 package com.invoicekit.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +24,7 @@ public class InvoiceItem {
 
     private Double amount;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "invoice_id")
     private Invoice invoice;
