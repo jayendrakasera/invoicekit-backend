@@ -19,9 +19,9 @@ public class ClientServiceImpl implements ClientService {
     private final UserRepository userRepository;
 
     @Override
-    public Client createClient(Long userId, ClientDto clientDto) {
+    public Client createClient(String email, ClientDto clientDto) {
 
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Client client = new Client();
@@ -36,8 +36,11 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<Client> getAllClients(Long userId) {
-        return clientRepository.findByUserId(userId);
+    public List<Client> getAllClients(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return clientRepository.findByUserId(user.getId());
     }
 
     @Override

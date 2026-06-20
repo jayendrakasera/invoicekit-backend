@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface ClientService {
 
-    Client createClient(Long userId, ClientDto clientDto);
+    Client createClient(String email, ClientDto clientDto);
 
-    List<Client> getAllClients(Long userId);
+    List<Client> getAllClients(String email);
 
     Client getClientById(Long id);
 

@@ -37,4 +37,11 @@ public class JwtService {
     public boolean validateToken(String token, String email) {
         return extractEmail(token).equals(email);
     }
+
+    public String extractTokenFromHeader(String authHeader) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+        return null;
+    }
 }
