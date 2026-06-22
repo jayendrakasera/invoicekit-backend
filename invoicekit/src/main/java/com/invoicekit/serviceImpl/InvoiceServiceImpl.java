@@ -2,6 +2,7 @@ package com.invoicekit.serviceImpl;
 
 import com.invoicekit.dto.*;
 import com.invoicekit.entity.*;
+import com.invoicekit.exception.ResourceNotFoundException;
 import com.invoicekit.repository.*;
 import com.invoicekit.service.InvoiceService;
 import com.invoicekit.util.PdfGenerator;
@@ -22,7 +23,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     public Invoice createInvoice(InvoiceRequest request) {
 
         Client client = clientRepository.findById(request.getClientId())
-                .orElseThrow(() -> new RuntimeException("Client not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
 
         Invoice invoice = new Invoice();
         invoice.setInvoiceNumber("INV-" + System.currentTimeMillis());
@@ -67,7 +68,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     public List<Invoice> getAllInvoices(String email) {
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         return invoiceRepository.findByClientUserId(user.getId());
     }
@@ -75,7 +76,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public Invoice getInvoiceById(Long id) {
         return invoiceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Invoice not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Invoice not found"));
     }
 
     @Override

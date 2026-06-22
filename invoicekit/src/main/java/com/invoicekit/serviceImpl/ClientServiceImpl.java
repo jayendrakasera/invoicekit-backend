@@ -3,6 +3,7 @@ package com.invoicekit.serviceImpl;
 import com.invoicekit.dto.ClientDto;
 import com.invoicekit.entity.Client;
 import com.invoicekit.entity.User;
+import com.invoicekit.exception.ResourceNotFoundException;
 import com.invoicekit.repository.ClientRepository;
 import com.invoicekit.repository.UserRepository;
 import com.invoicekit.service.ClientService;
@@ -22,7 +23,7 @@ public class ClientServiceImpl implements ClientService {
     public Client createClient(String email, ClientDto clientDto) {
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Client client = new Client();
         client.setName(clientDto.getName());
@@ -38,7 +39,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public List<Client> getAllClients(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         return clientRepository.findByUserId(user.getId());
     }
@@ -46,7 +47,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Client getClientById(Long id) {
         return clientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Client not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
     }
 
     @Override

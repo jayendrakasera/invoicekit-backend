@@ -7,6 +7,7 @@ import com.invoicekit.security.JwtService;
 import com.invoicekit.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class ClientController {
             /*@PathVariable Long userId,
             @RequestBody ClientDto clientDto*/
             @RequestHeader("Authorization") String authHeader,
-            @RequestBody ClientDto clientDto
+            @Valid @RequestBody ClientDto clientDto
     ) {
         String token = jwtService.extractTokenFromHeader(authHeader);
         String email = jwtService.extractEmail(token);
@@ -52,7 +53,7 @@ public class ClientController {
     @PutMapping("/{id}")
     public Client updateClient(
             @PathVariable Long id,
-            @RequestBody ClientDto clientDto
+            @Valid @RequestBody ClientDto clientDto
     ) {
         return clientService.updateClient(id, clientDto);
     }

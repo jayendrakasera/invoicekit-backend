@@ -1,6 +1,7 @@
 package com.invoicekit.serviceImpl;
 
 import com.invoicekit.entity.Invoice;
+import com.invoicekit.exception.ResourceNotFoundException;
 import com.invoicekit.repository.InvoiceRepository;
 import com.invoicekit.service.EmailService;
 import com.invoicekit.util.PdfGenerator;
@@ -22,7 +23,7 @@ public class EmailServiceImpl implements EmailService {
 
         try {
             Invoice invoice = invoiceRepository.findById(invoiceId)
-                    .orElseThrow(() -> new RuntimeException("Invoice not found"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Invoice not found"));
 
             byte[] pdf = PdfGenerator.generateInvoicePdf(invoice);
 
@@ -48,7 +49,7 @@ public class EmailServiceImpl implements EmailService {
             mailSender.send(message);
 
         } catch (Exception e) {
-            throw new RuntimeException("Error sending email");
+            throw new ResourceNotFoundException("Error sending email");
         }
     }
 }

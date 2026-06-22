@@ -2,6 +2,7 @@ package com.invoicekit.serviceImpl;
 
 import com.invoicekit.dto.*;
 import com.invoicekit.entity.User;
+import com.invoicekit.exception.ResourceNotFoundException;
 import com.invoicekit.repository.UserRepository;
 import com.invoicekit.security.JwtService;
 import com.invoicekit.service.AuthService;
@@ -36,10 +37,10 @@ public class AuthServiceImpl implements AuthService {
     public String login(LoginRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid password");
+            throw new ResourceNotFoundException("Invalid password");
         }
 
         return jwtService.generateToken(user.getEmail());

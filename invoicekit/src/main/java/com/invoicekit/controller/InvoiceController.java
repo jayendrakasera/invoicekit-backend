@@ -5,6 +5,7 @@ import com.invoicekit.entity.Invoice;
 import com.invoicekit.security.JwtService;
 import java.util.List;
 import com.invoicekit.service.InvoiceService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.*;
@@ -18,7 +19,7 @@ public class InvoiceController {
     private final InvoiceService invoiceService;
 
     @PostMapping
-    public Invoice createInvoice(@RequestBody InvoiceRequest request) {
+    public Invoice createInvoice(@Valid @RequestBody InvoiceRequest request) {
         return invoiceService.createInvoice(request);
     }
 
