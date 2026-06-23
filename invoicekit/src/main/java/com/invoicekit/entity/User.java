@@ -31,6 +31,21 @@ public class User {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(nullable = true)
+    private String bankName;
+
+    @Column(nullable = true)
+    private String accountNumber;
+
+    @Column(nullable = true)
+    private String ifscCode;
+
+    @Column(nullable = true)
+    private String accountHolderName;
+
+    @Column(nullable = true)
+    private String upiId;
+
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Client> clients;

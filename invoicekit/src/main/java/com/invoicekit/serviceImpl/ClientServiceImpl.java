@@ -10,6 +10,10 @@ import com.invoicekit.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+
 import java.util.List;
 
 @Service
@@ -78,6 +82,24 @@ public class ClientServiceImpl implements ClientService {
         return clientRepository.findByNameContainingIgnoreCaseAndUserId(
                 keyword,
                 user.getId()
+        );
+    }
+
+    @Override
+    public Page<Client> getClientsPaginated(
+            String email,
+            int page,
+            int size
+    ) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return clientRepository.findByUserId(
+                user.getId(),
+                pageable
         );
     }
 }

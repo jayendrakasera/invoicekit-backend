@@ -8,6 +8,7 @@ import java.util.List;
 import com.invoicekit.service.InvoiceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.*;
 
@@ -86,6 +87,22 @@ public class InvoiceController {
         String email = jwtService.extractEmail(token);
 
         return invoiceService.filterInvoicesByStatus(status, email);
+    }
+
+    @GetMapping("/paginated")
+    public Page<Invoice> getInvoicesPaginated(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        String token = jwtService.extractTokenFromHeader(authHeader);
+        String email = jwtService.extractEmail(token);
+
+        return invoiceService.getInvoicesPaginated(
+                email,
+                page,
+                size
+        );
     }
 
     @GetMapping("/{id}")

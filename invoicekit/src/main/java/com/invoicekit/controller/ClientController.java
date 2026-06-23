@@ -6,6 +6,7 @@ import com.invoicekit.entity.Client;
 import com.invoicekit.security.JwtService;
 import com.invoicekit.service.ClientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
@@ -73,5 +74,21 @@ public class ClientController {
         String email = jwtService.extractEmail(token);
 
         return clientService.searchClients(keyword, email);
+    }
+
+    @GetMapping("/paginated")
+    public Page<Client> getClientsPaginated(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        String token = jwtService.extractTokenFromHeader(authHeader);
+        String email = jwtService.extractEmail(token);
+
+        return clientService.getClientsPaginated(
+                email,
+                page,
+                size
+        );
     }
 }

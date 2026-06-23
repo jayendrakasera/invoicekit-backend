@@ -3,6 +3,7 @@ package com.invoicekit.service;
 import com.invoicekit.dto.InvoiceRequest;
 import com.invoicekit.entity.Invoice;
 import com.invoicekit.dto.DashboardResponse;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -27,4 +28,10 @@ public interface InvoiceService {
     Invoice updateInvoiceStatus(Long id, String status);
 
     byte[] generateInvoicePdf(Long invoiceId);
+
+    Page<Invoice> getInvoicesPaginated(
+            String email,
+            int page,
+            int size
+    );
 }

@@ -23,4 +23,10 @@ public class RegisterRequest {
     private String companyName;
 
     private String gstNumber;
+
+    private String bankName;
+    private String accountNumber;
+    private String ifscCode;
+    private String accountHolderName;
+    private String upiId;
 }

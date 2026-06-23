@@ -28,6 +28,12 @@ public class AuthServiceImpl implements AuthService {
         user.setCompanyName(request.getCompanyName());
         user.setGstNumber(request.getGstNumber());
 
+        user.setBankName(request.getBankName());
+        user.setAccountNumber(request.getAccountNumber());
+        user.setIfscCode(request.getIfscCode());
+        user.setAccountHolderName(request.getAccountHolderName());
+        user.setUpiId(request.getUpiId());
+
         userRepository.save(user);
 
         return jwtService.generateToken(user.getEmail());
@@ -44,5 +50,23 @@ public class AuthServiceImpl implements AuthService {
         }
 
         return jwtService.generateToken(user.getEmail());
+    }
+
+    @Override
+    public void updateBankDetails(
+            String email,
+            UpdateProfileRequest request
+    ) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+
+        user.setBankName(request.getBankName());
+        user.setAccountNumber(request.getAccountNumber());
+        user.setIfscCode(request.getIfscCode());
+        user.setAccountHolderName(request.getAccountHolderName());
+        user.setUpiId(request.getUpiId());
+
+        userRepository.save(user);
     }
 }
