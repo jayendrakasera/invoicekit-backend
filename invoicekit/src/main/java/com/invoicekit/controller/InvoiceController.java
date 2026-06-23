@@ -1,5 +1,6 @@
 package com.invoicekit.controller;
 
+import com.invoicekit.dto.DashboardResponse;
 import com.invoicekit.dto.InvoiceRequest;
 import com.invoicekit.entity.Invoice;
 import com.invoicekit.security.JwtService;
@@ -31,6 +32,60 @@ public class InvoiceController {
         String email = jwtService.extractEmail(token);
 
         return invoiceService.getAllInvoices(email);
+    }
+
+    @GetMapping("/dashboard")
+    public DashboardResponse getDashboardStats(
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        String token = jwtService.extractTokenFromHeader(authHeader);
+        String email = jwtService.extractEmail(token);
+
+        return invoiceService.getDashboardStats(email);
+    }
+
+    @GetMapping("/search")
+    public List<Invoice> searchInvoices(
+            @RequestParam String keyword,
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        String token = jwtService.extractTokenFromHeader(authHeader);
+        String email = jwtService.extractEmail(token);
+
+        return invoiceService.searchInvoices(keyword, email);
+    }
+
+    @GetMapping("/sort/amount")
+    public List<Invoice> sortByAmount(
+            @RequestParam String order,
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        String token = jwtService.extractTokenFromHeader(authHeader);
+        String email = jwtService.extractEmail(token);
+
+        return invoiceService.sortInvoicesByAmount(order, email);
+    }
+
+    @GetMapping("/sort/date")
+    public List<Invoice> sortByDate(
+            @RequestParam String order,
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        String token = jwtService.extractTokenFromHeader(authHeader);
+        String email = jwtService.extractEmail(token);
+
+        return invoiceService.sortInvoicesByDate(order, email);
+    }
+
+    @GetMapping("/filter/status")
+    public List<Invoice> filterByStatus(
+            @RequestParam String status,
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        String token = jwtService.extractTokenFromHeader(authHeader);
+        String email = jwtService.extractEmail(token);
+
+        return invoiceService.filterInvoicesByStatus(status, email);
     }
 
     @GetMapping("/{id}")

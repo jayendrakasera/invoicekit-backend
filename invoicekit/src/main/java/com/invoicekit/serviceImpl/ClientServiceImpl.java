@@ -68,4 +68,16 @@ public class ClientServiceImpl implements ClientService {
     public void deleteClient(Long id) {
         clientRepository.deleteById(id);
     }
+
+    @Override
+    public List<Client> searchClients(String keyword, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+
+        return clientRepository.findByNameContainingIgnoreCaseAndUserId(
+                keyword,
+                user.getId()
+        );
+    }
 }

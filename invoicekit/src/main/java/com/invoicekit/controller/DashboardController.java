@@ -25,10 +25,22 @@ public class DashboardController {
                 .mapToDouble(invoice -> invoice.getTotalAmount())
                 .sum();
 
+        long paidInvoices = invoiceRepository.findAll()
+                .stream()
+                .filter(invoice -> invoice.getStatus().equals("PAID"))
+                .count();
+
+        long pendingInvoices = invoiceRepository.findAll()
+                .stream()
+                .filter(invoice -> !invoice.getStatus().equals("PAID"))
+                .count();
+
         return new DashboardResponse(
                 totalClients,
                 totalInvoices,
-                totalRevenue
+                totalRevenue,
+                paidInvoices,
+                pendingInvoices
         );
     }
 }

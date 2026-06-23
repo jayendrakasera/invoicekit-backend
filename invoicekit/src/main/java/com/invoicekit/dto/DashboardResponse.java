@@ -11,4 +11,6 @@ public class DashboardResponse {
     private Long totalClients;
     private Long totalInvoices;
     private Double totalRevenue;
+    private Long paidInvoices;
+    private Long pendingInvoices;
 }

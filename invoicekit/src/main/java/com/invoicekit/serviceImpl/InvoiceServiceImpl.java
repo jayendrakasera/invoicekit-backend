@@ -94,4 +94,104 @@ public class InvoiceServiceImpl implements InvoiceService {
         Invoice invoice = getInvoiceById(invoiceId);
         return PdfGenerator.generateInvoicePdf(invoice);
     }
+
+    @Override
+    public DashboardResponse getDashboardStats(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+
+        List<Client> clients = clientRepository.findByUserId(user.getId());
+
+        List<Invoice> invoices = invoiceRepository.findByClientUserId(user.getId());
+
+        long totalClients = clients.size();
+        long totalInvoices = invoices.size();
+
+        double totalRevenue = invoices.stream()
+                .mapToDouble(Invoice::getTotalAmount)
+                .sum();
+
+        long paidInvoices = invoices.stream()
+                .filter(invoice -> invoice.getStatus().equals("PAID"))
+                .count();
+
+        long pendingInvoices = invoices.stream()
+                .filter(invoice -> !invoice.getStatus().equals("PAID"))
+                .count();
+
+        return new DashboardResponse(
+                totalClients,
+                totalInvoices,
+                totalRevenue,
+                paidInvoices,
+                pendingInvoices
+        );
+    }
+
+    @Override
+    public List<Invoice> searchInvoices(String keyword, String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+
+        return invoiceRepository
+                .findByInvoiceNumberContainingIgnoreCaseAndClientUserId(
+                        keyword,
+                        user.getId()
+                );
+    }
+
+    @Override
+    public List<Invoice> filterInvoicesByStatus(
+            String status,
+            String email
+    ) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+
+        return invoiceRepository.findByStatusAndClientUserId(
+                status,
+                user.getId()
+        );
+    }
+
+    @Override
+    public List<Invoice> sortInvoicesByAmount(
+            String order,
+            String email
+    ) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+
+        if (order.equalsIgnoreCase("asc")) {
+            return invoiceRepository
+                    .findByClientUserIdOrderByTotalAmountAsc(user.getId());
+        }
+
+        return invoiceRepository
+                .findByClientUserIdOrderByTotalAmountDesc(user.getId());
+    }
+
+    @Override
+    public List<Invoice> sortInvoicesByDate(
+            String order,
+            String email
+    ) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
+
+        if (order.equalsIgnoreCase("asc")) {
+            return invoiceRepository
+                    .findByClientUserIdOrderByIssueDateAsc(user.getId());
+        }
+
+        return invoiceRepository
+                .findByClientUserIdOrderByIssueDateDesc(user.getId());
+    }
 }

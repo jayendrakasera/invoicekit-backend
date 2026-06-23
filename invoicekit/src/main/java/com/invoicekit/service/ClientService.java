@@ -11,6 +11,8 @@ public interface ClientService {
 
     List<Client> getAllClients(String email);
 
+    List<Client> searchClients(String keyword, String email);
+
     Client getClientById(Long id);
 
     Client updateClient(Long id, ClientDto clientDto);

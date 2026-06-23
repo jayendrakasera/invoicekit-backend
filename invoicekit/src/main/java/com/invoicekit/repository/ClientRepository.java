@@ -6,4 +6,9 @@ import java.util.List;
 
 public interface ClientRepository extends JpaRepository<Client, Long> {
     List<Client> findByUserId(Long userId);
+
+    List<Client> findByNameContainingIgnoreCaseAndUserId(
+            String name,
+            Long userId
+    );
 }

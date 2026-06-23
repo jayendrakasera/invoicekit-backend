@@ -63,4 +63,15 @@ public class ClientController {
         clientService.deleteClient(id);
         return "Client deleted successfully";
     }
+
+    @GetMapping("/search")
+    public List<Client> searchClients(
+            @RequestParam String keyword,
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        String token = jwtService.extractTokenFromHeader(authHeader);
+        String email = jwtService.extractEmail(token);
+
+        return clientService.searchClients(keyword, email);
+    }
 }
