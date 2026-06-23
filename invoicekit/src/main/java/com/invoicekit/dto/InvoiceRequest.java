@@ -12,20 +12,20 @@ import jakarta.validation.constraints.*;
 @AllArgsConstructor
 public class InvoiceRequest {
 
-    @NotBlank
+    @NotNull
     private Long clientId;
 
-    @NotBlank
+    @NotNull
     private LocalDate issueDate;
 
-    @NotBlank
+    @NotNull
     private LocalDate dueDate;
 
     private String notes;
 
-    @NotBlank
+    @NotNull
     private Double gstPercentage;
 
-    @NotBlank
+    @NotEmpty
     private List<InvoiceItemDto> items;
 }

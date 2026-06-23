@@ -6,6 +6,7 @@ import com.invoicekit.exception.ResourceNotFoundException;
 import com.invoicekit.repository.*;
 import com.invoicekit.service.InvoiceService;
 import com.invoicekit.util.PdfGenerator;
+import com.invoicekit.util.QrCodeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -96,7 +97,17 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public byte[] generateInvoicePdf(Long invoiceId) {
         Invoice invoice = getInvoiceById(invoiceId);
-        return PdfGenerator.generateInvoicePdf(invoice);
+        User user = invoice.getClient().getUser();
+
+        String upiLink =
+                "upi://pay?pa=" + user.getUpiId()  //pa = UPI ID
+                        + "&pn=" + user.getAccountHolderName() // pn = payee name
+                        + "&am=" + invoice.getTotalAmount()  // am = Invoice total
+                        + "&cu=INR";  // cu = currency
+
+        byte[] qrBytes = QrCodeUtil.generateQrCode(upiLink);
+
+        return PdfGenerator.generateInvoicePdf(invoice, qrBytes, user);
     }
 
     @Override

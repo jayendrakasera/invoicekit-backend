@@ -2,6 +2,7 @@ package com.invoicekit.util;
 
 import com.invoicekit.entity.Invoice;
 import com.invoicekit.entity.InvoiceItem;
+import com.invoicekit.entity.User;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 
@@ -9,7 +10,7 @@ import java.io.ByteArrayOutputStream;
 
 public class PdfGenerator {
 
-    public static byte[] generateInvoicePdf(Invoice invoice) {
+    public static byte[] generateInvoicePdf(Invoice invoice, byte[] qrBytes, User user) {
 
         try {
             Document document = new Document();
@@ -63,6 +64,31 @@ public class PdfGenerator {
             document.add(new Paragraph("Subtotal: ₹" + invoice.getSubtotal(), normalFont));
             document.add(new Paragraph("GST: ₹" + invoice.getGstAmount(), normalFont));
             document.add(new Paragraph("Total: ₹" + invoice.getTotalAmount(), titleFont));
+
+            Image qrImage = Image.getInstance(qrBytes);
+
+            qrImage.scaleToFit(150, 150);
+
+            document.add(new Paragraph("Scan to Pay"));
+            document.add(qrImage);
+
+            document.add(new Paragraph(" "));
+            document.add(new Paragraph("Bank Details"));
+            document.add(new Paragraph(
+                    "Bank Name: " + user.getBankName()
+            ));
+            document.add(new Paragraph(
+                    "Account Holder: " + user.getAccountHolderName()
+            ));
+            document.add(new Paragraph(
+                    "Account Number: " + user.getAccountNumber()
+            ));
+            document.add(new Paragraph(
+                    "IFSC Code: " + user.getIfscCode()
+            ));
+            document.add(new Paragraph(
+                    "UPI ID: " + user.getUpiId()
+            ));
 
             document.close();
 

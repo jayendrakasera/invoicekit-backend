@@ -1,10 +1,12 @@
 package com.invoicekit.serviceImpl;
 
 import com.invoicekit.entity.Invoice;
+import com.invoicekit.entity.User;
 import com.invoicekit.exception.ResourceNotFoundException;
 import com.invoicekit.repository.InvoiceRepository;
 import com.invoicekit.service.EmailService;
 import com.invoicekit.util.PdfGenerator;
+import com.invoicekit.util.QrCodeUtil;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
@@ -25,8 +27,18 @@ public class EmailServiceImpl implements EmailService {
             Invoice invoice = invoiceRepository.findById(invoiceId)
                     .orElseThrow(() -> new ResourceNotFoundException("Invoice not found"));
 
-            byte[] pdf = PdfGenerator.generateInvoicePdf(invoice);
+//            byte[] pdf = PdfGenerator.generateInvoicePdf(invoice);
+            User user = invoice.getClient().getUser();
 
+            String upiLink =
+                    "upi://pay?pa=" + user.getUpiId()
+                            + "&pn=" + user.getAccountHolderName()
+                            + "&am=" + invoice.getTotalAmount()
+                            + "&cu=INR";
+
+            byte[] qrBytes = QrCodeUtil.generateQrCode(upiLink);
+
+            byte[] pdf = PdfGenerator.generateInvoicePdf(invoice, qrBytes, user);
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper =
                     new MimeMessageHelper(message, true);
