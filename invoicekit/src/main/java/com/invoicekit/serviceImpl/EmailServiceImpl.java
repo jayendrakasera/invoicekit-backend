@@ -58,8 +58,13 @@ public class EmailServiceImpl implements EmailService {
                     new ByteArrayResource(pdf)
             );
 
-            mailSender.send(message);
-
+//            mailSender.send(message);
+            try {
+                mailSender.send(message);
+                System.out.println("EMAIL SENT SUCCESSFULLY");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             throw new ResourceNotFoundException("Error sending email");
         }
