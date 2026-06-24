@@ -13,6 +13,7 @@ public class EmailController {
 
     @PostMapping("/send/{invoiceId}")
     public String sendInvoice(@PathVariable Long invoiceId) {
+        System.out.println("Invoice ID received: " + invoiceId);
         emailService.sendInvoiceEmail(invoiceId);
         return "Invoice email sent successfully";
     }
