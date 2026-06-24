@@ -4,14 +4,17 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.util.Date;
 import javax.crypto.SecretKey;
 
 @Service
 public class JwtService {
 
-    private final String SECRET = "mysecretkeymysecretkeymysecretkey12345";
-
+//    private final String SECRET = "mysecretkeymysecretkeymysecretkey12345";
+@Value("${jwt.secret}")
+private String SECRET;
     private SecretKey getSignKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes());
     }
