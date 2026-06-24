@@ -34,4 +34,6 @@ public interface InvoiceService {
             int page,
             int size
     );
+
+    void deleteInvoice(Long id);
 }

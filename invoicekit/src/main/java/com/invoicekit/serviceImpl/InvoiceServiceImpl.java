@@ -227,4 +227,13 @@ public class InvoiceServiceImpl implements InvoiceService {
                 pageable
         );
     }
+
+    @Override
+    public void deleteInvoice(Long id) {
+        Invoice invoice = invoiceRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Invoice not found"));
+
+        invoiceRepository.delete(invoice);
+    }
 }

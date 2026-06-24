@@ -1,6 +1,8 @@
 package com.invoicekit.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
@@ -38,7 +40,7 @@ public class Invoice {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @JsonIgnore
+    @JsonIgnoreProperties("invoices")
     @ManyToOne
     @JoinColumn(name = "client_id")
     private Client client;
