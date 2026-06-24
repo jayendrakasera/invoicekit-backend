@@ -59,14 +59,7 @@ public class EmailServiceImpl implements EmailService {
             );
 
 //            mailSender.send(message);
-            try {
-                System.out.println("STARTING EMAIL SEND...");
-                mailSender.send(message);
-                System.out.println("EMAIL SENT SUCCESSFULLY");
-            } catch (Exception e) {
-                System.out.println("EMAIL FAILED");
-                e.printStackTrace();
-            }
+            mailSender.send(message);
         } catch (Exception e) {
             throw new ResourceNotFoundException("Error sending email");
         }
