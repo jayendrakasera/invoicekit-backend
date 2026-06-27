@@ -7,21 +7,33 @@ import com.invoicekit.repository.InvoiceRepository;
 import com.invoicekit.service.EmailService;
 import com.invoicekit.util.PdfGenerator;
 import com.invoicekit.util.QrCodeUtil;
-import com.resend.Resend;
-import com.resend.services.emails.model.*;
+//import com.resend.Resend;
+//import com.resend.services.emails.model.*;
 import java.util.Base64;
 import lombok.RequiredArgsConstructor;
-/*import jakarta.mail.internet.MimeMessage;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.mail.javamail.*;*/
+import jakarta.mail.internet.MimeMessage;
+//import org.springframework.core.io.ByteArrayResource;
+//import org.springframework.mail.javamail.*;
 import org.springframework.stereotype.Service;
 import org.springframework.scheduling.annotation.Async;
+
+import com.google.api.services.gmail.Gmail;
+import com.google.api.services.gmail.model.Message;
+import jakarta.mail.Session;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.util.ByteArrayDataSource;
+import java.io.ByteArrayOutputStream;
+//import java.util.Base64;
+import java.util.Properties;
 
 @Service
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
 //    private final JavaMailSender mailSender;
+private final Gmail gmail;
     private final InvoiceRepository invoiceRepository;
 
     @Async
@@ -64,7 +76,8 @@ public class EmailServiceImpl implements EmailService {
             );*/
 
 //            mailSender.send(message);
-            Resend resend = new Resend(System.getenv("RESEND_API_KEY"));
+
+            /*   Resend resend = new Resend(System.getenv("RESEND_API_KEY"));
 
             byte[] pdfBytes = PdfGenerator.generateInvoicePdf(invoice, qrBytes, user);
 
@@ -82,7 +95,55 @@ public class EmailServiceImpl implements EmailService {
                     .attachments(new Attachment[]{attachment})
                     .build();
 
-            resend.emails().send(params);
+            resend.emails().send(params); */
+
+            Session session = Session.getDefaultInstance(new Properties());
+
+            MimeMessage email = new MimeMessage(session);
+
+            email.setFrom(new InternetAddress(user.getEmail()));
+            email.addRecipient(
+                    jakarta.mail.Message.RecipientType.TO,
+                    new InternetAddress(invoice.getClient().getEmail())
+            );
+
+            email.setSubject("Invoice from InvoiceKit - " + invoice.getInvoiceNumber());
+
+            MimeBodyPart textPart = new MimeBodyPart();
+            textPart.setText(
+                    "Hello " + invoice.getClient().getName() + ",\n\n" +
+                            "Please find your invoice attached.\n\n" +
+                            "Total Amount: ₹" + invoice.getTotalAmount()
+            );
+
+            MimeBodyPart attachmentPart = new MimeBodyPart();
+            attachmentPart.setDataHandler(
+                    new jakarta.activation.DataHandler(
+                            new ByteArrayDataSource(pdf, "application/pdf")
+                    )
+            );
+            attachmentPart.setFileName("invoice.pdf");
+
+            MimeMultipart multipart = new MimeMultipart();
+            multipart.addBodyPart(textPart);
+            multipart.addBodyPart(attachmentPart);
+
+            email.setContent(multipart);
+
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            email.writeTo(buffer);
+
+            String encodedEmail = Base64.getUrlEncoder()
+                    .encodeToString(buffer.toByteArray());
+
+            Message message = new Message();
+            message.setRaw(encodedEmail);
+
+            gmail.users().messages()
+                    .send("me", message)
+                    .execute();
+
+            System.out.println("EMAIL SENT SUCCESSFULLY");
         } catch (Exception e) {
             e.printStackTrace();
         }
