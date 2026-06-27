@@ -63,7 +63,7 @@ public class EmailServiceImpl implements EmailService {
 //            mailSender.send(message);
             mailSender.send(message);
         } catch (Exception e) {
-            throw new ResourceNotFoundException("Error sending email");
+            e.printStackTrace();
         }
     }
 }
