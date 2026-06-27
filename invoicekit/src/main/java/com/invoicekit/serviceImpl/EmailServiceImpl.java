@@ -74,8 +74,9 @@ public class EmailServiceImpl implements EmailService {
                     .build();
 
             CreateEmailOptions params = CreateEmailOptions.builder()
-                    .from("jayendrakasera95@gmail.com")
-                    .to(invoice.getClient().getEmail())
+                    .from("onboarding@resend.dev")
+//                    .to(invoice.getClient().getEmail())
+                    .to("jayendrakasera95@gmail.com")
                     .subject("Invoice " + invoice.getInvoiceNumber())
                     .html("<p>Please find your invoice attached.</p>")
                     .attachments(new Attachment[]{attachment})
