@@ -19,15 +19,25 @@ public class GmailConfig {
     private String refreshToken;
 
     @Bean
-    public Gmail gmailService() {
-        GoogleCredential credential = new GoogleCredential.Builder()
-                .setClientSecrets(clientId, clientSecret)
-                .build()
-                .setRefreshToken(refreshToken);
+    public Gmail gmailService() throws Exception {
+
+        GoogleCredential credential =
+                new GoogleCredential.Builder()
+                        .setTransport(
+                                com.google.api.client.googleapis.javanet.GoogleNetHttpTransport.newTrustedTransport()
+                        )
+                        .setJsonFactory(
+                                com.google.api.client.json.gson.GsonFactory.getDefaultInstance()
+                        )
+                        .setClientSecrets(clientId, clientSecret)
+                        .build();
+
+        credential.setRefreshToken(refreshToken);
+        credential.refreshToken();
 
         return new Gmail.Builder(
-                credential.getTransport(),
-                credential.getJsonFactory(),
+                com.google.api.client.googleapis.javanet.GoogleNetHttpTransport.newTrustedTransport(),
+                com.google.api.client.json.gson.GsonFactory.getDefaultInstance(),
                 credential
         )
                 .setApplicationName("InvoiceKit")
