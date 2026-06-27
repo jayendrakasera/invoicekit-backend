@@ -7,6 +7,9 @@ import com.invoicekit.repository.InvoiceRepository;
 import com.invoicekit.service.EmailService;
 import com.invoicekit.util.PdfGenerator;
 import com.invoicekit.util.QrCodeUtil;
+import com.resend.Resend;
+import com.resend.services.emails.model.*;
+import java.util.Base64;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
@@ -61,7 +64,24 @@ public class EmailServiceImpl implements EmailService {
             );
 
 //            mailSender.send(message);
-            mailSender.send(message);
+            Resend resend = new Resend(System.getenv("RESEND_API_KEY"));
+
+            byte[] pdfBytes = PdfGenerator.generateInvoicePdf(invoice, qrBytes, user);
+
+            Attachment attachment = Attachment.builder()
+                    .fileName("invoice-" + invoice.getInvoiceNumber() + ".pdf")
+                    .content(Base64.getEncoder().encodeToString(pdfBytes))
+                    .build();
+
+            CreateEmailOptions params = CreateEmailOptions.builder()
+                    .from("onboarding@resend.dev")
+                    .to(invoice.getClient().getEmail())
+                    .subject("Invoice " + invoice.getInvoiceNumber())
+                    .html("<p>Please find your invoice attached.</p>")
+                    .attachments(new Attachment[]{attachment})
+                    .build();
+
+            resend.emails().send(params);
         } catch (Exception e) {
             e.printStackTrace();
         }
