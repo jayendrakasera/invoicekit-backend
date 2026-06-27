@@ -45,6 +45,12 @@ public class Invoice {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
-    private List<InvoiceItem> items;
+ /*   @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
+    private List<InvoiceItem> items;*/
+ @OneToMany(
+         mappedBy = "invoice",
+         cascade = CascadeType.ALL,
+         fetch = FetchType.EAGER
+ )
+ private List<InvoiceItem> items;
 }
