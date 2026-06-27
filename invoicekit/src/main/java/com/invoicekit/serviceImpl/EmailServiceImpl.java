@@ -10,10 +10,10 @@ import com.invoicekit.util.QrCodeUtil;
 import com.resend.Resend;
 import com.resend.services.emails.model.*;
 import java.util.Base64;
-import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+/*import jakarta.mail.internet.MimeMessage;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.mail.javamail.*;
+import org.springframework.mail.javamail.*;*/
 import org.springframework.stereotype.Service;
 import org.springframework.scheduling.annotation.Async;
 
@@ -21,7 +21,7 @@ import org.springframework.scheduling.annotation.Async;
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
-    private final JavaMailSender mailSender;
+//    private final JavaMailSender mailSender;
     private final InvoiceRepository invoiceRepository;
 
     @Async
@@ -44,7 +44,7 @@ public class EmailServiceImpl implements EmailService {
             byte[] qrBytes = QrCodeUtil.generateQrCode(upiLink);
 
             byte[] pdf = PdfGenerator.generateInvoicePdf(invoice, qrBytes, user);
-            MimeMessage message = mailSender.createMimeMessage();
+       /*     MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper =
                     new MimeMessageHelper(message, true);
 
@@ -61,7 +61,7 @@ public class EmailServiceImpl implements EmailService {
             helper.addAttachment(
                     "invoice.pdf",
                     new ByteArrayResource(pdf)
-            );
+            );*/
 
 //            mailSender.send(message);
             Resend resend = new Resend(System.getenv("RESEND_API_KEY"));
