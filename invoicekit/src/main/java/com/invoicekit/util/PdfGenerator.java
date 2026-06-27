@@ -51,11 +51,14 @@ public class PdfGenerator {
             table.addCell("Price");
             table.addCell("Amount");
 
-            for (InvoiceItem item : invoice.getItems()) {
-                table.addCell(item.getItemName());
-                table.addCell(String.valueOf(item.getQuantity()));
-                table.addCell(String.valueOf(item.getPrice()));
-                table.addCell(String.valueOf(item.getAmount()));
+            /*for (InvoiceItem item : invoice.getItems()) {*/
+            if (invoice.getItems() != null) {
+                for (InvoiceItem item : invoice.getItems()) {
+                    table.addCell(item.getItemName());
+                    table.addCell(String.valueOf(item.getQuantity()));
+                    table.addCell(String.valueOf(item.getPrice()));
+                    table.addCell(String.valueOf(item.getAmount()));
+                }
             }
 
             document.add(table);
@@ -65,12 +68,20 @@ public class PdfGenerator {
             document.add(new Paragraph("GST: ₹" + invoice.getGstAmount(), normalFont));
             document.add(new Paragraph("Total: ₹" + invoice.getTotalAmount(), titleFont));
 
-            Image qrImage = Image.getInstance(qrBytes);
+            /*Image qrImage = Image.getInstance(qrBytes);
 
             qrImage.scaleToFit(150, 150);
 
             document.add(new Paragraph("Scan to Pay"));
-            document.add(qrImage);
+            document.add(qrImage);*/
+
+            if (qrBytes != null && qrBytes.length > 0) {
+                Image qrImage = Image.getInstance(qrBytes);
+                qrImage.scaleToFit(150, 150);
+
+                document.add(new Paragraph("Scan to Pay"));
+                document.add(qrImage);
+            }
 
             document.add(new Paragraph(" "));
             document.add(new Paragraph("Bank Details"));
@@ -95,7 +106,8 @@ public class PdfGenerator {
             return out.toByteArray();
 
         } catch (Exception e) {
-            throw new RuntimeException("Error generating PDF");
+            e.printStackTrace();
+            throw new RuntimeException("Error generating PDF: " + e.getMessage());
         }
     }
 }
