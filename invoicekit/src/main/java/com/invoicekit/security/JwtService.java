@@ -13,7 +13,9 @@ import javax.crypto.SecretKey;
 public class JwtService {
 
 //    private final String SECRET = "mysecretkeymysecretkeymysecretkey12345";
-@Value("${jwt.secret}")
+/*@Value("${jwt.secret}")
+private String SECRET;*/
+@Value("${jwt.secret:mysecretkeymysecretkeymysecretkey12345}")
 private String SECRET;
     private SecretKey getSignKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes());

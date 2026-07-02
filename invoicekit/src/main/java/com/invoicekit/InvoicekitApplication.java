@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 public class InvoicekitApplication {
 
 	public static void main(String[] args) {
+//		System.out.println("DB URL = " + System.getenv("SPRING_DATASOURCE_URL"));
 		SpringApplication.run(InvoicekitApplication.class, args);
 	}
 
