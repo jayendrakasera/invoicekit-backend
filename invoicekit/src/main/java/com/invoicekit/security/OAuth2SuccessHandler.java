@@ -1,6 +1,7 @@
 package com.invoicekit.security;
 
-import jakarta.servlet.ServletException;
+import com.invoicekit.entity.User;
+import com.invoicekit.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,17 +17,28 @@ import java.io.IOException;
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtService jwtService;
+    private final UserRepository userRepository;
 
     @Override
     public void onAuthenticationSuccess(
             HttpServletRequest request,
             HttpServletResponse response,
             Authentication authentication
-    ) throws IOException, ServletException {
+    ) throws IOException {
 
         OAuth2User oauthUser = (OAuth2User) authentication.getPrincipal();
 
         String email = oauthUser.getAttribute("email");
+        String name = oauthUser.getAttribute("name");
+
+        // Save user if not exists
+        if (userRepository.findByEmail(email).isEmpty()) {
+            User user = new User();
+            user.setEmail(email);
+            user.setName(name);
+            user.setPassword("oauth-user");
+            userRepository.save(user);
+        }
 
         String token = jwtService.generateToken(email);
 
