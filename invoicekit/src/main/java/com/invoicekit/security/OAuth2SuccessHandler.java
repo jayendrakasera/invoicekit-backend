@@ -40,6 +40,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
             userRepository.save(user);
         }
 
+        System.out.println("OAuth Email: " + email);
+
         String token = jwtService.generateToken(email);
 
         String redirectUrl =
