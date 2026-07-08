@@ -28,7 +28,6 @@ InvoiceKit is a full-stack invoicing SaaS built specifically for the Indian mark
 
 **Why I built this:** As a freelance web developer, I needed a free, India-specific invoicing tool. Everything available was either paid or missing GST + UPI support. So I built it.
 
-
 ---
 
 ## ✨ Features
