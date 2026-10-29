@@ -1,0 +1,13 @@
+Project: InvoiceKit
+
+BharatCode Build League Submission
+
+This repository is submitted as part of the
+BharatCode Build League.
+
+Project: InvoiceKit
+Category: Work & Automation
+
+Backend: https://github.com/jayendrakasera/invoicekit-backend
+Frontend: https://github.com/jayendrakasera/invoicekit-frontend
+Live Demo: https://invoicekit.vercel.app
